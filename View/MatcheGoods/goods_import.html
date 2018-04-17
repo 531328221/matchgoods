@@ -1,0 +1,130 @@
+<include file="Public/min-header" />
+
+<div class="wrapper">
+     <include file="Public/breadcrumb"/>
+     <section class="content" >
+        <div class="batchBox" style="height: 120px;">
+            <!-- <div class=""><a  href="{:U('Admin/order/downExc')}" class="">下载订单模版<i><img src="__PUBLIC__/images/d.png"></i></a></div> -->
+
+            <div class="" onchange="upload_exc()">
+              <a  onclick="clp()" href="javascript:void(0)" class="">导入已备案<i><img src="__PUBLIC__/images/dd.png"></i></a>
+                <input type="file" name="excel" id="file_exc"  style="display: none;" >
+            </div>
+        </div>
+        <div class="content" style="height: 600px;background: #fff;margin-top: 5px;">
+            <div class="box-header row">
+              <h3 class="box-title col-xs-2" style="width: inherit;">导入进度：</h3>
+                <div class="progress progress-xs progress-striped active col-xs-6" style="height: 16px;border-radius: 4px;padding: 0">
+                      <div class="progress-bar progress-bar-success" style="width: 0%;line-height: initial;"></div>
+                      
+                </div>100
+              <div class="box-tools">
+                <div class="input-group input-group-sm" style="width: 300px;">
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-default dropdown-toggle __web-inspector-hide-shortcut__" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                      </ul>
+                    </div>
+                    <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
+
+                  <div class="input-group-btn">
+                    <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body table-responsive no-padding">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th width="74px">#</th>
+                    <th width="174px">状态</th>
+                    <th>结果</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <div class="box-body table-responsive no-padding" style="height: 310px;overflow:scroll-y;" id="result-table">
+              <table class="table table-striped" id="result">
+                <tbody>
+
+                </tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="col-sm-5" style="margin-top: 30px;">
+              <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
+                <span>成功：<i>10</i></span>&nbsp;&nbsp;
+                <span>失败：<i>70</i></span>&nbsp;&nbsp;
+                <span>总数：<i>200</i></span>
+              </div>
+            </div>
+        </div>
+     </section>
+ </div>
+ <script type="text/javascript">
+    function clp(){
+        return  $("#file_exc").click();
+    }
+    var html;
+    function upload_exc(){  
+    var layerload = layer.load(0, {shade: false}); //0代表加载的风格，支持0-2
+    var formData = new FormData();//构造空对象，下面用append 方法赋值。    
+      formData.append("file", $("#file_exc")[0].files[0]); 
+
+      // var formData = new FormData($("#upload2")[0]);//构造空对象，下面用append 方法赋值。    
+      $.ajax({  
+          url :"/index.php?m=Admin&c=MatcheGoods&a=importRecord",
+          type : 'POST',  
+          data : formData,  
+          processData : false,  //必须false才会避开jQuery对 formdata 的默认处理  XMLHttpRequest会对 formdata 进行正确的处理   
+          contentType : false, //必须false才会自动加上正确的Content-Type   
+          success : function(data) {
+            layer.close(layerload);
+            obj = $.parseJSON(data);
+            if(obj.status == 1){
+                layer.alert("成功匹配");
+            }else{
+
+                layer.alert(obj.msg, {icon: 2},function(index){location.href =location.href;});
+            }
+          }
+      });
+  } 
+     function TChide(data){
+        $('.'+data).hide();
+  }
+
+
+
+
+$(function(){
+
+$time = setInterval(adds,500);
+
+});
+var progress= 0
+function adds(){
+  next = Math.ceil(Math.random()*10%10);
+  progress += next;
+  $string = 'Bacon ipsum dolor sit amet salami venison chicken flank fatback doner';
+  $rand = Math.random()*100%100;
+  $substring = $string.substring(0,$rand) + ".";
+  $row = '<tr><td>'+progress+'</td><td><span class="label label-success">Approved</span></td><td>'+$substring+'</td></tr>';
+  $('#result').append($row);
+  $('#result-table').scrollTop($("#result-table")[0].scrollHeight);
+  $('.progress-bar').css({"width":progress+"%"});
+  if(progress>100){
+    clearInterval($time);
+  }
+}
+ </script>
+ </body>
+ </html> 
